@@ -1,0 +1,59 @@
+trigger: none
+pool:
+  name: devopsengineer
+jobs:
+- job: Build_Init
+  displayName: 'Terraform init'
+  steps:
+  - task: TerraformInstaller@1
+    inputs:
+      terraformVersion: 'latest'
+  - task: TerraformTask@5
+    inputs:
+      provider: 'azurerm'
+      command: 'init'
+      backendServiceArm: 'Devopsengineer'
+      backendAzureRmResourceGroupName: 'statefile'
+      backendAzureRmStorageAccountName: 'statefile89234'
+      backendAzureRmContainerName: 'statefile'
+      backendAzureRmKey: 'prod.terraform.tfstate'
+
+- job: Plan
+  dependsOn: Build_Init
+  displayName: Terraform plan
+  steps:
+  - task: TerraformInstaller@1
+    inputs:
+     terraformVersion: 'latest'
+  - task: TerraformTask@5
+    inputs:
+      provider: 'azurerm'
+      command: 'init'
+      backendServiceArm: 'Devopsengineer'
+      backendAzureRmOverrideSubscriptionID: '30c669d0-afb4-45f6-a261-dd314a10bf69'
+      backendAzureRmResourceGroupName: 'statefile'
+      backendAzureRmStorageAccountName: 'statefile89234'
+      backendAzureRmContainerName: 'statefile'
+      backendAzureRmKey: 'prod.terraform.tfstate'
+- job: Apply
+  displayName: 'Terraform apply'
+  dependsOn: Plan
+  steps:
+  - task: TerraformInstaller@1
+    inputs:
+      terraformVersion: 'latest'
+  - task: TerraformTask@5
+    inputs:
+      provider: 'azurerm'
+      command: 'init'
+      backendServiceArm: 'Devopsengineer'
+      backendAzureRmResourceGroupName: 'statefile'
+      backendAzureRmStorageAccountName: 'statefile89234'
+      backendAzureRmContainerName: 'statefile'
+      backendAzureRmKey: 'prod.terraform.tfstate'
+  - task: TerraformTask@5
+    inputs:
+      provider: 'azurerm'
+      command: 'apply'
+      commandOptions: '-auto-approve'
+      environmentServiceNameAzureRM: 'Devopsengineer'
