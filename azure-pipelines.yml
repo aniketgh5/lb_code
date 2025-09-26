@@ -1,6 +1,6 @@
 trigger:
--main
-pool:devopsengineer
+-none
+pool:Chalisa
 jobs:
 - job: Build_Init
   displayName: 'Terraform init'
